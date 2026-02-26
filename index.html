@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BCOPR Project Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0f1623; font-family: 'DM Sans', sans-serif; color: #e2e8f0; }
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #0a1020; }
+    ::-webkit-scrollbar-thumb { background: #1e2d45; border-radius: 3px; }
+    select option { background: #0a1020; color: #e2e8f0; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyi8V29r-7wVRw6r_yrZieWKtjhQI1ZXO1n_mqYVVwOR6k90BlBjNl0MwbaAvoNoQPw4A/exec";
+    const APP_PASSWORD = "BCOPR$$";
+
+    const SEED_PROJECTS = [{"id":"mm3pphn9mlyzx0vx9","title":"Midland III and IV","category":"RACP","status":"In Progress","priority":"Medium","deadline":"","lead":"David","team":"","description":"","documents":[],"subtasks":[{"id":"mm3q074rpor7at4kah","title":"Revised RDA's submitted to OB 2/9/26","assignee":"David","due":"","done":false}],"archived":false},{"id":"mm3ppphgjdmi7ud73sl","title":"Weavertown","category":"RACP","status":"Planning","priority":"Medium","deadline":"","lead":"David","team":"","description":"","documents":[],"subtasks":[{"id":"mm3q0vbvtwfie7vuk0l","title":"Extension Submitted 2/26/26","assignee":"David","due":"","done":false}],"archived":false},{"id":"mm3pq37pnrei0lil1po","title":"G&B Hopewell","category":"RACP","status":"Planning","priority":"Medium","deadline":"","lead":"David","team":"","description":"","documents":[],"subtasks":[{"id":"mm3q1wtxmyvmdghy358","title":"Marie provided update @ 2/18/26 Board Meeting","assignee":"","due":"","done":false}],"archived":false},{"id":"mm3pqdh8zx3cvl93hik","title":"IBEW I and II","category":"RACP","status":"In Progress","priority":"Medium","deadline":"","lead":"David","team":"","description":"","documents":[],"subtasks":[{"id":"mm3q5lqnxdd0lli4y6","title":"Revised Amendments submitted 2/20/26","assignee":"David","due":"","done":true},{"id":"mm3q5vvz775rnjlmg18","title":"Awaiting amended special conditions","assignee":"","due":"","done":false}],"archived":false},{"id":"mm3pqla4wkgu470558","title":"Centennial","category":"RACP","status":"Planning","priority":"Medium","deadline":"","lead":"David","team":"","description":"","documents":[],"subtasks":[{"id":"mm3q6wvk4hx005xvwtc","title":"Signed extension submitted 1/27/25","assignee":"David","due":"","done":true},{"id":"mm3q7ie16fi2jin3a","title":"Reach out to Scott regarding Don's transfer letter and if OB accepted","assignee":"","due":"","done":false}],"archived":false},{"id":"mm3pqxfxaybghsvbl2j","title":"Golden Dome","category":"RACP","status":"In Progress","priority":"Medium","deadline":"","lead":"David","team":"","description":"","documents":[],"subtasks":[{"id":"mm3q8nrmjjatc4chyea","title":"Agreements sent 2/20/26","assignee":"David","due":"","done":false}],"archived":false},{"id":"mm3pr371wy5y5c4pj0s","title":"Aviation Sciences","category":"RACP","status":"In Progress","priority":"Medium","deadline":"","lead":"David","team":"","description":"","documents":[],"subtasks":[{"id":"mm3q94qjk4u1p7o8p3m","title":"Agreements sent 2/20/26","assignee":"","due":"","done":true},{"id":"mm3q9oj64ok9rm6y6bt","title":"Wait to hear about deeds from Scott","assignee":"","due":"","done":false}],"archived":false},{"id":"mm3pshnahjjll2r18no","title":"EPA Cleanup","category":"Grants","status":"Under Review","priority":"Medium","deadline":"","lead":"Dan","team":"","description":"","documents":[],"subtasks":[{"id":"mm3qaakzbxaor613dcu","title":"Conference registration/booking","assignee":"Dan","due":"2026-03-14","done":false}],"archived":false},{"id":"mm3pt63yxvzw4wxpv","title":"EPA Assessment","category":"Grants","status":"Under Review","priority":"Medium","deadline":"","lead":"Dan","team":"","description":"","documents":[],"subtasks":[],"archived":false},{"id":"mm3ptrnrvvmqgnqfb29","title":"LSA Neighborhood North","category":"RACP","status":"In Progress","priority":"Medium","deadline":"","lead":"David","team":"","description":"","documents":[],"subtasks":[{"id":"mm3qaz8bg8pebwj5b5k","title":"Revised estimates sent to DCED 2/26/26","assignee":"David","due":"","done":false},{"id":"mm3qbd2kxpyd43p66i","title":"Clarify signing contract for 2025 award","assignee":"David","due":"","done":false}],"archived":false},{"id":"mm3pu3mvoav02g080e","title":"LSA Fallston Bridge","category":"Grants","status":"Planning","priority":"High","deadline":"","lead":"Sophie","team":"","description":"","documents":[],"subtasks":[{"id":"mm3qcqf06u6uw5cz0z","title":"Research potential funding sources for Planning/Inspection","assignee":"Sophie","due":"2026-03-06","done":false}],"archived":false},{"id":"mm3pv22wvvafg0ss6be","title":"HUD Brodhead Road","category":"Grants","status":"In Progress","priority":"Medium","deadline":"","lead":"Dan","team":"","description":"","documents":[],"subtasks":[{"id":"mm3qo5wb3ojxz9xkabe","title":"Complete DRGR Input","assignee":"","due":"2026-03-26","done":false}],"archived":false},{"id":"mm3pvxoho7mzrgvhdka","title":"Phone Call Outreach","category":"RAMBA","status":"In Progress","priority":"High","deadline":"","lead":"","team":"","description":"","documents":[],"subtasks":[{"id":"mm3qoot7f24z5lakgmb","title":"Reach out to respective Munis","assignee":"David","due":"2026-03-06","done":false},{"id":"mm3qoxde4i88oyliw6w","title":"Reach out to respecive Munis","assignee":"Sophie","due":"2026-03-06","done":false}],"archived":false},{"id":"mm3vh7xdv6zh96tjqh9","title":"Selection of Scanning Documents","category":"Historical Digitization","status":"Planning","priority":"Medium","deadline":"","lead":"","team":"","description":"","documents":[],"subtasks":[{"id":"mm3vicqqki47etfnzas","title":"Confirm on site day w Brenda","assignee":"David","due":"","done":false}],"archived":false}];
+
+    const SEED_CATEGORIES = [
+      { id: "cat-racp", name: "RACP", icon: "📋" },
+      { id: "cat-grants", name: "Grants", icon: "💰" },
+      { id: "cat-ramba", name: "RAMBA", icon: "🤝" },
+      { id: "cat-hist", name: "Historical Digitization", icon: "🏛️" },
+    ];
+
+    const STATUSES = ["Planning", "In Progress", "Under Review", "Completed", "On Hold"];
+    const STATUS_COLORS = { "Planning": "#94a3b8", "In Progress": "#3b82f6", "Under Review": "#f59e0b", "Completed": "#22c55e", "On Hold": "#ef4444" };
+    const PRIORITIES = ["High", "Medium", "Low"];
+    const PRIORITY_COLORS = { "High": "#ef4444", "Medium": "#f59e0b", "Low": "#22c55e" };
+    const PRIORITY_ICONS = { "High": "🔴", "Medium": "🟡", "Low": "🟢" };
+    const CAT_ICONS = ["📁","💰","🏘️","🏙️","🌱","🏗️","📋","🤝","🏛️","📊","🌍","🔬","⚡","🏥","🎓","🚌","💧","♻️","🛡️","🌐"];
+    const catColors = ["#f59e0b","#22c55e","#6366f1","#0ea5e9","#ec4899","#14b8a6","#f97316","#8b5cf6"];
+
+    function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+    async function gsLoad() {
+      const res = await fetch(`${SCRIPT_URL}?action=load`, { redirect: "follow" });
+      return await res.json();
+    }
+
+    async function gsSave(key, value) {
+      const url = `${SCRIPT_URL}?action=save&key=${encodeURIComponent(key)}&data=${encodeURIComponent(value)}`;
+      const res = await fetch(url, { redirect: "follow" });
+      return await res.json();
+    }
+
+    const inputStyle = { width: "100%", background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 8, padding: "9px 12px", color: "#e2e8f0", fontSize: 14, fontFamily: "'DM Sans', sans-serif", outline: "none", boxSizing: "border-box" };
+    const selectStyle = { background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 8, padding: "9px 14px", color: "#e2e8f0", fontSize: 14, fontFamily: "'DM Sans', sans-serif", cursor: "pointer" };
+    const btnStyle = { padding: "9px 18px", borderRadius: 8, border: "none", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", fontSize: 14, fontWeight: 500 };
+
+    function Badge({ status }) {
+      return <span style={{ background: STATUS_COLORS[status] + "22", color: STATUS_COLORS[status], border: `1px solid ${STATUS_COLORS[status]}55`, borderRadius: 6, padding: "2px 10px", fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>{status}</span>;
+    }
+    function PriorityBadge({ priority }) {
+      if (!priority) return null;
+      return <span style={{ background: PRIORITY_COLORS[priority] + "22", color: PRIORITY_COLORS[priority], border: `1px solid ${PRIORITY_COLORS[priority]}55`, borderRadius: 6, padding: "2px 10px", fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>{PRIORITY_ICONS[priority]} {priority}</span>;
+    }
+    function ModalOverlay({ children, onClose, wide }) {
+      return (
+        <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "#000a", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: "#0f1623", border: "1px solid #1e2d45", borderRadius: 18, padding: "32px", width: "100%", maxWidth: wide ? 800 : 540, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 24px 80px #000c" }}>{children}</div>
+        </div>
+      );
+    }
+    function FormField({ label, children }) {
+      return <div style={{ marginBottom: 14 }}><label style={{ display: "block", fontSize: 12, color: "#475569", marginBottom: 5, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>{label}</label>{children}</div>;
+    }
+
+    function ProjectRow({ p, categories, onOpen, tableMode }) {
+      const [expanded, setExpanded] = useState(false);
+      const isOverdue = p.deadline && new Date(p.deadline) < new Date() && p.status !== "Completed";
+      const subtasks = p.subtasks || [];
+      const doneCount = subtasks.filter(s => s.done).length;
+      const subPct = subtasks.length ? Math.round((doneCount / subtasks.length) * 100) : 0;
+      const cat = categories.find(c => c.name === p.category);
+      if (tableMode) {
+        return (
+          <div style={{ borderBottom: "1px solid #1e2d4520" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 100px 110px", padding: "13px 20px", cursor: "pointer", transition: "background 0.15s", alignItems: "center" }}
+              onMouseEnter={e => e.currentTarget.style.background = "#0ea5e908"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                {subtasks.length > 0
+                  ? <button onClick={e => { e.stopPropagation(); setExpanded(!expanded); }} style={{ background: "none", border: "none", cursor: "pointer", color: "#475569", fontSize: 12, padding: "2px 4px", borderRadius: 4, lineHeight: 1, flexShrink: 0, transition: "transform 0.2s", transform: expanded ? "rotate(90deg)" : "rotate(0deg)" }}>▶</button>
+                  : <span style={{ width: 20, flexShrink: 0 }} />}
+                <div onClick={() => onOpen(p)} style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 500, fontSize: 14, color: "#e2e8f0" }}>{p.title}</div>
+                  {subtasks.length > 0 && <div style={{ marginTop: 4, display: "flex", alignItems: "center", gap: 6 }}><div style={{ width: 60, height: 3, background: "#1e2d45", borderRadius: 2, overflow: "hidden" }}><div style={{ height: "100%", width: `${subPct}%`, background: subPct === 100 ? "#22c55e" : "#0ea5e9", borderRadius: 2 }} /></div><span style={{ fontSize: 11, color: "#475569" }}>{doneCount}/{subtasks.length} tasks</span></div>}
+                </div>
+              </div>
+              <div onClick={() => onOpen(p)} style={{ fontSize: 13, color: "#64748b" }}>{cat?.icon || "📁"} {p.category}</div>
+              <div onClick={() => onOpen(p)} style={{ fontSize: 13, color: "#64748b" }}>{p.lead || "—"}</div>
+              <div onClick={() => onOpen(p)} style={{ fontSize: 13, color: isOverdue ? "#ef4444" : "#64748b" }}>{p.deadline || "—"}{isOverdue ? " ⚠️" : ""}</div>
+              <div onClick={() => onOpen(p)}><PriorityBadge priority={p.priority} /></div>
+              <div onClick={() => onOpen(p)}><Badge status={p.status} /></div>
+            </div>
+            {expanded && subtasks.length > 0 && (
+              <div style={{ background: "#080e1a", borderTop: "1px solid #1e2d4520", padding: "8px 20px 12px 52px" }}>
+                {subtasks.map(s => {
+                  const isSubOverdue = s.due && new Date(s.due) < new Date() && !s.done;
+                  return <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", borderBottom: "1px solid #1e2d4515" }}>
+                    <div style={{ width: 14, height: 14, minWidth: 14, borderRadius: 3, border: `2px solid ${s.done ? "#22c55e" : "#334155"}`, background: s.done ? "#22c55e" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#fff", fontWeight: 700 }}>{s.done ? "✓" : ""}</div>
+                    <span style={{ fontSize: 13, color: s.done ? "#475569" : "#cbd5e1", textDecoration: s.done ? "line-through" : "none", flex: 1 }}>{s.title}</span>
+                    {s.assignee && <span style={{ fontSize: 11, color: "#334155" }}>👤 {s.assignee}</span>}
+                    {s.due && <span style={{ fontSize: 11, color: isSubOverdue ? "#ef4444" : "#334155" }}>📅 {s.due}{isSubOverdue ? " ⚠️" : ""}</span>}
+                    <span style={{ fontSize: 11, color: s.done ? "#22c55e" : "#475569", fontWeight: 600 }}>{s.done ? "Done" : "Pending"}</span>
+                  </div>;
+                })}
+              </div>
+            )}
+          </div>
+        );
+      }
+      return (
+        <div onClick={() => onOpen(p)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "13px 0", borderBottom: "1px solid #1e2d4530", cursor: "pointer" }}>
+          <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+            <span style={{ fontSize: 18 }}>{cat?.icon || "📁"}</span>
+            <div>
+              <div style={{ fontWeight: 500, fontSize: 14, color: "#e2e8f0" }}>{p.title}</div>
+              <div style={{ fontSize: 12, color: "#475569" }}>{p.lead || p.category}{p.deadline ? ` · Due ${p.deadline}` : ""}{isOverdue ? " ⚠️" : ""}{subtasks.length > 0 && ` · ${doneCount}/${subtasks.length} tasks`}</div>
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}><PriorityBadge priority={p.priority} /><Badge status={p.status} /></div>
+        </div>
+      );
+    }
+
+    function App() {
+      const [authed, setAuthed] = useState(false);
+      const [pwInput, setPwInput] = useState("");
+      const [pwError, setPwError] = useState(false);
+      const [projects, setProjects] = useState([]);
+      const [categories, setCategories] = useState(SEED_CATEGORIES);
+      const [view, setView] = useState("dashboard");
+      const [modal, setModal] = useState(null);
+      const [activeProject, setActiveProject] = useState(null);
+      const [form, setForm] = useState({});
+      const [filterCat, setFilterCat] = useState("All");
+      const [filterStatus, setFilterStatus] = useState("All");
+      const [filterPriority, setFilterPriority] = useState("All");
+      const [search, setSearch] = useState("");
+      const [noteInput, setNoteInput] = useState("");
+      const [docInput, setDocInput] = useState("");
+      const [subtaskInput, setSubtaskInput] = useState({ title: "", assignee: "", due: "" });
+      const [loading, setLoading] = useState(true);
+      const [saving, setSaving] = useState(false);
+      const [saveError, setSaveError] = useState(false);
+      const [editingCatId, setEditingCatId] = useState(null);
+      const [editingCatName, setEditingCatName] = useState("");
+      const [newCatName, setNewCatName] = useState("");
+      const [newCatIcon, setNewCatIcon] = useState("📁");
+      const [showIconPicker, setShowIconPicker] = useState(false);
+
+      useEffect(() => {
+        if (!authed) return;
+        (async () => {
+          try {
+            const data = await gsLoad();
+            const loadedProjects = data.projects ? JSON.parse(data.projects) : null;
+            const loadedCategories = data.categories && data.categories !== "[]" ? JSON.parse(data.categories) : null;
+            if (!loadedProjects || loadedProjects.length === 0) {
+              setProjects(SEED_PROJECTS);
+              setCategories(SEED_CATEGORIES);
+              await gsSave("pm-projects", JSON.stringify(SEED_PROJECTS));
+              await gsSave("pm-categories", JSON.stringify(SEED_CATEGORIES));
+            } else {
+              setProjects(loadedProjects);
+              if (loadedCategories) setCategories(loadedCategories);
+            }
+          } catch (e) {
+            console.error("Load failed, using seed data:", e);
+            setProjects(SEED_PROJECTS);
+            setCategories(SEED_CATEGORIES);
+          }
+          setLoading(false);
+        })();
+      }, [authed]);
+
+      function handleLogin() {
+        if (pwInput === APP_PASSWORD) { setAuthed(true); setPwError(false); }
+        else { setPwError(true); setPwInput(""); }
+      }
+
+      async function saveProjects(updated) {
+        setProjects(updated);
+        setSaving(true); setSaveError(false);
+        try {
+          const result = await gsSave("pm-projects", JSON.stringify(updated));
+          if (!result.success) setSaveError(true);
+        } catch (e) { setSaveError(true); }
+        setSaving(false);
+      }
+
+      async function saveCategories(updated) {
+        setCategories(updated);
+        setSaving(true); setSaveError(false);
+        try {
+          const result = await gsSave("pm-categories", JSON.stringify(updated));
+          if (!result.success) setSaveError(true);
+        } catch (e) { setSaveError(true); }
+        setSaving(false);
+      }
+
+      function makeEmptyProject() {
+        return { id: genId(), title: "", category: categories[0]?.name || "", status: "Planning", priority: "Medium", deadline: "", lead: "", team: "", description: "", documents: [], subtasks: [], archived: false };
+      }
+      function openAdd() { setForm(makeEmptyProject()); setModal("add"); }
+      function openEdit(p) { setForm({ ...p }); setModal("edit"); }
+      function openDetail(p) { setActiveProject(p); setNoteInput(""); setDocInput(""); setSubtaskInput({ title: "", assignee: "", due: "" }); setModal("detail"); }
+      function submitForm() {
+        if (!form.title.trim()) return;
+        const updated = modal === "add" ? [...projects, { ...form }] : projects.map(p => p.id === form.id ? { ...form } : p);
+        saveProjects(updated); setModal(null);
+      }
+      function deleteProject(id) { saveProjects(projects.filter(p => p.id !== id)); setModal(null); }
+      function archiveProject(id) {
+        const updated = projects.map(p => p.id === id ? { ...p, archived: true } : p);
+        saveProjects(updated);
+        if (activeProject?.id === id) setActiveProject(prev => ({ ...prev, archived: true }));
+        setModal(null);
+      }
+      function unarchiveProject(id) { saveProjects(projects.map(p => p.id === id ? { ...p, archived: false } : p)); }
+      function updateActive(updater) {
+        const updated = projects.map(p => p.id === activeProject.id ? updater(p) : p);
+        saveProjects(updated);
+        setActiveProject(updated.find(p => p.id === activeProject.id));
+      }
+      function addNote() {
+        if (!noteInput.trim()) return;
+        updateActive(p => ({ ...p, notesLog: [...(p.notesLog || []), { id: genId(), text: noteInput, date: new Date().toLocaleDateString() }] }));
+        setNoteInput("");
+      }
+      function addDocument() {
+        if (!docInput.trim()) return;
+        updateActive(p => ({ ...p, documents: [...(p.documents || []), { id: genId(), name: docInput, date: new Date().toLocaleDateString() }] }));
+        setDocInput("");
+      }
+      function removeDoc(id) { updateActive(p => ({ ...p, documents: (p.documents || []).filter(d => d.id !== id) })); }
+      function addSubtask() {
+        if (!subtaskInput.title.trim()) return;
+        updateActive(p => ({ ...p, subtasks: [...(p.subtasks || []), { id: genId(), ...subtaskInput, done: false }] }));
+        setSubtaskInput({ title: "", assignee: "", due: "" });
+      }
+      function toggleSubtask(sid) { updateActive(p => ({ ...p, subtasks: (p.subtasks || []).map(s => s.id === sid ? { ...s, done: !s.done } : s) })); }
+      function deleteSubtask(sid) { updateActive(p => ({ ...p, subtasks: (p.subtasks || []).filter(s => s.id !== sid) })); }
+      function quickStatus(id, status) {
+        saveProjects(projects.map(p => p.id === id ? { ...p, status } : p));
+        if (activeProject?.id === id) setActiveProject(prev => ({ ...prev, status }));
+      }
+      function startEditCat(cat) { setEditingCatId(cat.id); setEditingCatName(cat.name); }
+      function saveEditCat(cat) {
+        const newName = editingCatName.trim();
+        if (!newName) { setEditingCatId(null); return; }
+        const oldName = cat.name;
+        saveCategories(categories.map(c => c.id === cat.id ? { ...c, name: newName } : c));
+        saveProjects(projects.map(p => p.category === oldName ? { ...p, category: newName } : p));
+        if (filterCat === oldName) setFilterCat(newName);
+        setEditingCatId(null);
+      }
+      function addCategory() {
+        if (!newCatName.trim()) return;
+        saveCategories([...categories, { id: genId(), name: newCatName.trim(), icon: newCatIcon }]);
+        setNewCatName(""); setNewCatIcon("📁"); setShowIconPicker(false);
+      }
+      function deleteCategory(cat) {
+        if (projects.some(p => p.category === cat.name)) return alert(`Cannot delete "${cat.name}" — it has projects assigned.`);
+        saveCategories(categories.filter(c => c.id !== cat.id));
+      }
+
+      const activeProjects = projects.filter(p => !p.archived);
+      const archivedProjects = projects.filter(p => p.archived);
+      const filtered = activeProjects.filter(p =>
+        (filterCat === "All" || p.category === filterCat) &&
+        (filterStatus === "All" || p.status === filterStatus) &&
+        (filterPriority === "All" || p.priority === filterPriority) &&
+        (!search || p.title.toLowerCase().includes(search.toLowerCase()) || (p.lead || "").toLowerCase().includes(search.toLowerCase()))
+      );
+      const stats = {
+        total: activeProjects.length,
+        inProgress: activeProjects.filter(p => p.status === "In Progress").length,
+        completed: activeProjects.filter(p => p.status === "Completed").length,
+        overdue: activeProjects.filter(p => p.deadline && new Date(p.deadline) < new Date() && p.status !== "Completed").length,
+        highPriority: activeProjects.filter(p => p.priority === "High").length,
+      };
+      const today = new Date(); today.setHours(0,0,0,0);
+      const in30 = new Date(today); in30.setDate(in30.getDate() + 30);
+      const upcomingDeadlines = activeProjects.filter(p => p.deadline && p.status !== "Completed").map(p => ({ ...p, deadlineDate: new Date(p.deadline) })).filter(p => p.deadlineDate >= today && p.deadlineDate <= in30).sort((a, b) => a.deadlineDate - b.deadlineDate);
+      const catCounts = categories.reduce((a, c) => ({ ...a, [c.name]: activeProjects.filter(p => p.category === c.name).length }), {});
+
+      if (!authed) return (
+        <div style={{ minHeight: "100vh", background: "#0f1623", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 20, padding: "48px 40px", width: "100%", maxWidth: 400, boxShadow: "0 24px 80px #000c", textAlign: "center" }}>
+            <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 26, color: "#7dd3fc", lineHeight: 1.2, marginBottom: 4 }}>PROJECT<br /><span style={{ color: "#e2e8f0" }}>TRACKER</span></div>
+            <div style={{ fontSize: 12, color: "#4a6080", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 36 }}>BCOPR</div>
+            <div style={{ textAlign: "left", marginBottom: 8 }}><label style={{ fontSize: 12, color: "#475569", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>Password</label></div>
+            <input type="password" value={pwInput} onChange={e => { setPwInput(e.target.value); setPwError(false); }} onKeyDown={e => e.key === "Enter" && handleLogin()} placeholder="Enter password..." autoFocus style={{ ...inputStyle, marginBottom: 8, border: `1px solid ${pwError ? "#ef4444" : "#1e2d45"}`, fontSize: 15, padding: "12px 16px" }} />
+            {pwError && <div style={{ color: "#ef4444", fontSize: 13, marginBottom: 12, textAlign: "left" }}>Incorrect password. Please try again.</div>}
+            {!pwError && <div style={{ marginBottom: 12 }} />}
+            <button onClick={handleLogin} style={{ width: "100%", background: "linear-gradient(135deg, #0ea5e9, #6366f1)", border: "none", borderRadius: 10, padding: "12px", color: "#fff", fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 15, cursor: "pointer" }}>Sign In</button>
+          </div>
+        </div>
+      );
+
+      if (loading) return (
+        <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#0f1623", gap: 16 }}>
+          <div style={{ fontSize: 32 }}>📊</div>
+          <div style={{ fontSize: 18, fontFamily: "'Syne', sans-serif", fontWeight: 700 }}>Connecting to Google Sheets...</div>
+        </div>
+      );
+
+      return (
+        <div style={{ minHeight: "100vh", background: "#0f1623" }}>
+          <div style={{ position: "fixed", left: 0, top: 0, bottom: 0, width: 224, background: "#0a1020", borderRight: "1px solid #1e2d45", display: "flex", flexDirection: "column", zIndex: 10 }}>
+            <div style={{ padding: "28px 24px 20px" }}>
+              <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 20, color: "#7dd3fc", lineHeight: 1.2 }}>PROJECT<br /><span style={{ color: "#e2e8f0" }}>TRACKER</span></div>
+              <div style={{ fontSize: 11, color: "#4a6080", marginTop: 4, letterSpacing: "0.08em", textTransform: "uppercase" }}>BCOPR</div>
+            </div>
+            <nav style={{ padding: "0 12px", flex: 1, overflowY: "auto" }}>
+              {[["dashboard","⬡","Dashboard"],["list","☰","All Projects"],["archive","🗃️","Archive"]].map(([v, icon, label]) => (
+                <button key={v} onClick={() => setView(v)} style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "10px 14px", borderRadius: 8, border: "none", cursor: "pointer", marginBottom: 4, fontSize: 14, fontFamily: "inherit", fontWeight: 500, background: view === v ? "#1a2d4a" : "transparent", color: view === v ? "#7dd3fc" : "#64748b" }}>
+                  <span style={{ fontSize: 16 }}>{icon}</span><span>{label}</span>
+                  {v === "archive" && archivedProjects.length > 0 && <span style={{ marginLeft: "auto", background: "#1e2d45", borderRadius: 10, padding: "1px 7px", fontSize: 11, color: "#94a3b8" }}>{archivedProjects.length}</span>}
+                </button>
+              ))}
+              <div style={{ margin: "16px 0 6px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", paddingRight: 8 }}>
+                <span style={{ fontSize: 10, color: "#334155", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 600 }}>Categories</span>
+                <button onClick={() => setModal("manageCategories")} style={{ background: "none", border: "none", color: "#334155", cursor: "pointer", fontSize: 15, padding: 2 }}>⚙</button>
+              </div>
+              {categories.map(cat => (
+                <button key={cat.id} onClick={() => { setFilterCat(cat.name); setView("list"); }} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", padding: "8px 14px", borderRadius: 8, border: "none", cursor: "pointer", marginBottom: 2, fontSize: 13, fontFamily: "inherit", background: filterCat === cat.name && view === "list" ? "#1a2d4a" : "transparent", color: filterCat === cat.name && view === "list" ? "#7dd3fc" : "#64748b" }}>
+                  <span>{cat.icon} <span style={{ marginLeft: 6 }}>{cat.name}</span></span>
+                  <span style={{ background: "#1e2d45", borderRadius: 10, padding: "1px 7px", fontSize: 11, color: "#94a3b8" }}>{catCounts[cat.name] || 0}</span>
+                </button>
+              ))}
+            </nav>
+            <div style={{ padding: "14px 20px", borderTop: "1px solid #1e2d45", display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ width: 8, height: 8, borderRadius: "50%", background: saveError ? "#ef4444" : saving ? "#f59e0b" : "#22c55e" }} />
+              <span style={{ fontSize: 12, color: saveError ? "#ef4444" : saving ? "#f59e0b" : "#475569" }}>{saveError ? "Save failed" : saving ? "Saving..." : "Saved"}</span>
+            </div>
+          </div>
+
+          <div style={{ marginLeft: 224, minHeight: "100vh" }}>
+            <div style={{ padding: "24px 36px", borderBottom: "1px solid #1e2d45", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, background: "#0f1623", zIndex: 5 }}>
+              <div>
+                <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 24, fontWeight: 700, margin: 0, color: "#f1f5f9" }}>{view === "dashboard" ? "Dashboard" : view === "archive" ? "Archive" : "All Projects"}</h1>
+                <div style={{ fontSize: 13, color: "#475569", marginTop: 2 }}>{new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</div>
+              </div>
+              {view !== "archive" && <button onClick={openAdd} style={{ background: "linear-gradient(135deg, #0ea5e9, #6366f1)", border: "none", borderRadius: 10, padding: "10px 22px", color: "#fff", fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 14, cursor: "pointer", boxShadow: "0 4px 20px #0ea5e940" }}>+ New Project</button>}
+            </div>
+
+            <div style={{ padding: "32px 36px" }}>
+              {view === "dashboard" && (<React.Fragment>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 14, marginBottom: 28 }}>
+                  {[{label:"Total Projects",value:stats.total,color:"#7dd3fc",bg:"#0ea5e9"},{label:"In Progress",value:stats.inProgress,color:"#93c5fd",bg:"#3b82f6"},{label:"Completed",value:stats.completed,color:"#86efac",bg:"#22c55e"},{label:"Overdue",value:stats.overdue,color:"#fca5a5",bg:"#ef4444"},{label:"High Priority",value:stats.highPriority,color:"#fdba74",bg:"#f97316"}].map(s => (
+                    <div key={s.label} style={{ background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 14, padding: "18px 20px", position: "relative", overflow: "hidden" }}>
+                      <div style={{ position: "absolute", top: 0, right: 0, width: 70, height: 70, background: s.bg + "12", borderRadius: "0 14px 0 70px" }} />
+                      <div style={{ fontSize: 34, fontFamily: "'Syne', sans-serif", fontWeight: 800, color: s.color, lineHeight: 1 }}>{s.value}</div>
+                      <div style={{ fontSize: 12, color: "#475569", marginTop: 5 }}>{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 20, marginBottom: 28 }}>
+                  <div style={{ background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 14, padding: "22px 24px" }}>
+                    <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, marginBottom: 18, fontSize: 15, color: "#cbd5e1" }}>By Category</div>
+                    {categories.map((cat, i) => {
+                      const count = catCounts[cat.name] || 0;
+                      const pct = stats.total ? Math.round((count / stats.total) * 100) : 0;
+                      return <div key={cat.id} onClick={() => { setFilterCat(cat.name); setView("list"); }} style={{ marginBottom: 14, cursor: "pointer" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.75"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>
+                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 5, color: "#94a3b8" }}>
+                          <span>{cat.icon} {cat.name} <span style={{ color: catColors[i % catColors.length], fontSize: 11 }}>→</span></span>
+                          <span style={{ color: "#e2e8f0", fontWeight: 600 }}>{count}</span>
+                        </div>
+                        <div style={{ height: 6, background: "#1e2d45", borderRadius: 4, overflow: "hidden" }}><div style={{ height: "100%", width: `${pct}%`, background: catColors[i % catColors.length], borderRadius: 4 }} /></div>
+                      </div>;
+                    })}
+                  </div>
+                  <div style={{ background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 14, padding: "22px 24px" }}>
+                    <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, marginBottom: 18, fontSize: 15, color: "#cbd5e1" }}>By Status</div>
+                    {STATUSES.map(s => <div key={s} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "7px 0", borderBottom: "1px solid #1e2d45" }}><Badge status={s} /><span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, color: "#e2e8f0" }}>{activeProjects.filter(p => p.status === s).length}</span></div>)}
+                  </div>
+                </div>
+                <div style={{ background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 14, padding: "22px 24px", marginBottom: 28 }}>
+                  <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, marginBottom: 18, fontSize: 15, color: "#cbd5e1", display: "flex", alignItems: "center", gap: 8 }}>📅 Upcoming Deadlines <span style={{ fontSize: 12, color: "#475569", fontWeight: 400 }}>(next 30 days)</span></div>
+                  {upcomingDeadlines.length === 0 ? <div style={{ color: "#334155", fontSize: 13 }}>No upcoming deadlines in the next 30 days.</div> : upcomingDeadlines.map(p => {
+                    const daysLeft = Math.ceil((p.deadlineDate - today) / (1000 * 60 * 60 * 24));
+                    const urgent = daysLeft <= 7;
+                    const cat = categories.find(c => c.name === p.category);
+                    return <div key={p.id} onClick={() => openDetail(p)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "11px 14px", background: urgent ? "#ef444408" : "#0f1623", border: `1px solid ${urgent ? "#ef444430" : "#1e2d45"}`, borderRadius: 10, marginBottom: 8, cursor: "pointer" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}><span style={{ fontSize: 16 }}>{cat?.icon || "📁"}</span><div><div style={{ fontSize: 13, fontWeight: 500, color: "#e2e8f0" }}>{p.title}</div><div style={{ fontSize: 11, color: "#475569", marginTop: 2 }}>{p.deadline} · {p.lead || p.category}</div></div></div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}><PriorityBadge priority={p.priority} /><span style={{ fontSize: 12, fontWeight: 700, color: urgent ? "#ef4444" : "#f59e0b", whiteSpace: "nowrap" }}>{daysLeft === 0 ? "Due today!" : `${daysLeft}d left`}</span></div>
+                    </div>;
+                  })}
+                </div>
+                <div style={{ background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 14, padding: "22px 24px" }}>
+                  <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, marginBottom: 18, fontSize: 15, color: "#cbd5e1" }}>Recent Projects</div>
+                  {activeProjects.length === 0 && <div style={{ color: "#334155", textAlign: "center", padding: "32px 0", fontSize: 14 }}>No projects yet.</div>}
+                  {activeProjects.slice(-5).reverse().map(p => <ProjectRow key={p.id} p={p} categories={categories} onOpen={openDetail} />)}
+                </div>
+              </React.Fragment>)}
+
+              {view === "list" && (<React.Fragment>
+                <div style={{ display: "flex", gap: 10, marginBottom: 24, flexWrap: "wrap" }}>
+                  <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search projects or leads..." style={{ flex: 1, minWidth: 180, ...inputStyle }} />
+                  <select value={filterCat} onChange={e => setFilterCat(e.target.value)} style={selectStyle}><option>All</option>{categories.map(c => <option key={c.id}>{c.name}</option>)}</select>
+                  <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} style={selectStyle}><option>All</option>{STATUSES.map(s => <option key={s}>{s}</option>)}</select>
+                  <select value={filterPriority} onChange={e => setFilterPriority(e.target.value)} style={selectStyle}><option>All</option>{PRIORITIES.map(p => <option key={p}>{p}</option>)}</select>
+                </div>
+                <div style={{ background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 14, overflow: "hidden" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 100px 110px", padding: "12px 20px", borderBottom: "1px solid #1e2d45", fontSize: 11, color: "#334155", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 600 }}>
+                    <span>Project</span><span>Category</span><span>Lead</span><span>Deadline</span><span>Priority</span><span>Status</span>
+                  </div>
+                  {filtered.length === 0 && <div style={{ color: "#334155", textAlign: "center", padding: "48px 0", fontSize: 14 }}>No projects match your filters.</div>}
+                  {filtered.map(p => <ProjectRow key={p.id} p={p} categories={categories} onOpen={openDetail} tableMode />)}
+                </div>
+              </React.Fragment>)}
+
+              {view === "archive" && (
+                <div style={{ background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 14, overflow: "hidden" }}>
+                  {archivedProjects.length === 0 ? <div style={{ color: "#334155", textAlign: "center", padding: "64px 0", fontSize: 14 }}>No archived projects yet.</div>
+                    : archivedProjects.map(p => {
+                      const cat = categories.find(c => c.name === p.category);
+                      return <div key={p.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 20px", borderBottom: "1px solid #1e2d4520", opacity: 0.7 }}>
+                        <div style={{ display: "flex", gap: 12, alignItems: "center" }}><span style={{ fontSize: 18 }}>{cat?.icon || "📁"}</span><div><div style={{ fontSize: 14, fontWeight: 500, color: "#94a3b8" }}>{p.title}</div><div style={{ fontSize: 12, color: "#334155" }}>{p.category}{p.deadline ? ` · Due ${p.deadline}` : ""}</div></div></div>
+                        <div style={{ display: "flex", gap: 10, alignItems: "center" }}><Badge status={p.status} /><button onClick={() => unarchiveProject(p.id)} style={{ ...btnStyle, background: "#1e2d45", color: "#94a3b8", fontSize: 12, padding: "6px 14px" }}>Restore</button><button onClick={() => { if (window.confirm("Permanently delete?")) deleteProject(p.id); }} style={{ ...btnStyle, background: "#ef444420", color: "#ef4444", fontSize: 12, padding: "6px 14px" }}>Delete</button></div>
+                      </div>;
+                    })}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {(modal === "add" || modal === "edit") && (
+            <ModalOverlay onClose={() => setModal(null)}>
+              <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 20, marginBottom: 24, color: "#f1f5f9" }}>{modal === "add" ? "New Project" : "Edit Project"}</div>
+              <FormField label="Title *"><input value={form.title || ""} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Project title..." style={inputStyle} /></FormField>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+                <FormField label="Category"><select value={form.category || ""} onChange={e => setForm({ ...form, category: e.target.value })} style={inputStyle}>{categories.map(c => <option key={c.id}>{c.name}</option>)}</select></FormField>
+                <FormField label="Status"><select value={form.status || "Planning"} onChange={e => setForm({ ...form, status: e.target.value })} style={inputStyle}>{STATUSES.map(s => <option key={s}>{s}</option>)}</select></FormField>
+                <FormField label="Priority"><select value={form.priority || "Medium"} onChange={e => setForm({ ...form, priority: e.target.value })} style={inputStyle}>{PRIORITIES.map(p => <option key={p}>{p}</option>)}</select></FormField>
+                <FormField label="Deadline"><input type="date" value={form.deadline || ""} onChange={e => setForm({ ...form, deadline: e.target.value })} style={inputStyle} /></FormField>
+                <FormField label="Project Lead"><input value={form.lead || ""} onChange={e => setForm({ ...form, lead: e.target.value })} placeholder="Lead name..." style={inputStyle} /></FormField>
+                <FormField label="Team Members"><input value={form.team || ""} onChange={e => setForm({ ...form, team: e.target.value })} placeholder="e.g. Alice, Bob..." style={inputStyle} /></FormField>
+              </div>
+              <FormField label="Description"><textarea value={form.description || ""} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Project overview..." rows={3} style={{ ...inputStyle, resize: "vertical" }} /></FormField>
+              <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 8 }}>
+                {modal === "edit" && <><button onClick={() => archiveProject(form.id)} style={{ ...btnStyle, background: "#1e2d45", color: "#94a3b8" }}>Archive</button><button onClick={() => deleteProject(form.id)} style={{ ...btnStyle, background: "#ef444422", color: "#ef4444", border: "1px solid #ef444440" }}>Delete</button></>}
+                <button onClick={() => setModal(null)} style={{ ...btnStyle, background: "#1e2d45", color: "#94a3b8" }}>Cancel</button>
+                <button onClick={submitForm} style={{ ...btnStyle, background: "linear-gradient(135deg, #0ea5e9, #6366f1)", color: "#fff", fontWeight: 700 }}>{modal === "add" ? "Create Project" : "Save Changes"}</button>
+              </div>
+            </ModalOverlay>
+          )}
+
+          {modal === "detail" && activeProject && (() => {
+            const p = activeProject;
+            const isOverdue = p.deadline && new Date(p.deadline) < new Date() && p.status !== "Completed";
+            const subtasks = p.subtasks || [];
+            const doneCount = subtasks.filter(s => s.done).length;
+            const subtaskPct = subtasks.length ? Math.round((doneCount / subtasks.length) * 100) : 0;
+            const cat = categories.find(c => c.name === p.category);
+            return (
+              <ModalOverlay onClose={() => setModal(null)} wide>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}><span style={{ fontSize: 18 }}>{cat?.icon || "📁"}</span><span style={{ fontSize: 12, color: "#475569", textTransform: "uppercase", letterSpacing: "0.08em" }}>{p.category}</span><PriorityBadge priority={p.priority} /></div>
+                    <h2 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 22, margin: 0, color: "#f1f5f9" }}>{p.title}</h2>
+                  </div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button onClick={() => archiveProject(p.id)} style={{ ...btnStyle, background: "#1e2d45", color: "#94a3b8", fontSize: 13 }}>Archive</button>
+                    <button onClick={() => { setModal(null); openEdit(p); }} style={{ ...btnStyle, background: "#1e2d45", color: "#94a3b8", fontSize: 13 }}>Edit</button>
+                  </div>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 22 }}>
+                  {[["Status", <Badge status={p.status} />], ["Lead", p.lead || "—"], ["Deadline", p.deadline ? <span style={{ color: isOverdue ? "#ef4444" : "#e2e8f0" }}>{p.deadline}{isOverdue ? " ⚠️" : ""}</span> : "—"]].map(([l, v]) => (
+                    <div key={l} style={{ background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 10, padding: "12px 16px" }}>
+                      <div style={{ fontSize: 11, color: "#334155", marginBottom: 5, textTransform: "uppercase", letterSpacing: "0.08em" }}>{l}</div>
+                      <div style={{ fontSize: 14, color: "#cbd5e1" }}>{v}</div>
+                    </div>
+                  ))}
+                </div>
+                {p.team && <div style={{ marginBottom: 16 }}><span style={{ fontSize: 12, color: "#475569", marginRight: 8 }}>Team:</span><span style={{ fontSize: 14, color: "#94a3b8" }}>{p.team}</span></div>}
+                {p.description && <p style={{ color: "#94a3b8", fontSize: 14, lineHeight: 1.7, marginBottom: 20, padding: "14px 16px", background: "#0a1020", borderRadius: 10, border: "1px solid #1e2d45" }}>{p.description}</p>}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 24 }}>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#475569", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Status</div>
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>{STATUSES.map(s => <button key={s} onClick={() => quickStatus(p.id, s)} style={{ padding: "5px 12px", borderRadius: 8, border: `1px solid ${STATUS_COLORS[s]}44`, background: p.status === s ? STATUS_COLORS[s] + "22" : "transparent", color: p.status === s ? STATUS_COLORS[s] : "#475569", fontFamily: "inherit", fontSize: 12, cursor: "pointer", fontWeight: p.status === s ? 700 : 400 }}>{s}</button>)}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#475569", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Priority</div>
+                    <div style={{ display: "flex", gap: 6 }}>{PRIORITIES.map(pr => <button key={pr} onClick={() => { const u = projects.map(proj => proj.id === p.id ? { ...proj, priority: pr } : proj); saveProjects(u); setActiveProject({ ...p, priority: pr }); }} style={{ padding: "5px 12px", borderRadius: 8, border: `1px solid ${PRIORITY_COLORS[pr]}44`, background: p.priority === pr ? PRIORITY_COLORS[pr] + "22" : "transparent", color: p.priority === pr ? PRIORITY_COLORS[pr] : "#475569", fontFamily: "inherit", fontSize: 12, cursor: "pointer", fontWeight: p.priority === pr ? 700 : 400 }}>{PRIORITY_ICONS[pr]} {pr}</button>)}</div>
+                  </div>
+                </div>
+                <div style={{ marginBottom: 24, background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 14, padding: "20px 22px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#475569", textTransform: "uppercase", letterSpacing: "0.1em" }}>Subtasks</div>
+                    {subtasks.length > 0 && <span style={{ fontSize: 12, color: subtaskPct === 100 ? "#22c55e" : "#64748b", fontWeight: 600 }}>{doneCount}/{subtasks.length} complete</span>}
+                  </div>
+                  {subtasks.length > 0 && <div style={{ marginBottom: 14 }}>
+                    <div style={{ height: 5, background: "#1e2d45", borderRadius: 4, overflow: "hidden", marginBottom: 12 }}><div style={{ height: "100%", width: `${subtaskPct}%`, background: subtaskPct === 100 ? "#22c55e" : "linear-gradient(90deg,#0ea5e9,#6366f1)", borderRadius: 4 }} /></div>
+                    {subtasks.map(s => {
+                      const isSubOverdue = s.due && new Date(s.due) < new Date() && !s.done;
+                      return <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", background: "#0f1623", border: `1px solid ${s.done ? "#22c55e22" : "#1e2d45"}`, borderRadius: 10, marginBottom: 6 }}>
+                        <button onClick={() => toggleSubtask(s.id)} style={{ width: 20, height: 20, minWidth: 20, borderRadius: 5, border: `2px solid ${s.done ? "#22c55e" : "#334155"}`, background: s.done ? "#22c55e" : "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#fff", padding: 0, fontWeight: 700 }}>{s.done ? "✓" : ""}</button>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: 13, color: s.done ? "#475569" : "#e2e8f0", textDecoration: s.done ? "line-through" : "none", fontWeight: 500 }}>{s.title}</div>
+                          <div style={{ fontSize: 11, color: "#334155", marginTop: 2, display: "flex", gap: 10 }}>{s.assignee && <span>👤 {s.assignee}</span>}{s.due && <span style={{ color: isSubOverdue ? "#ef4444" : "#334155" }}>📅 {s.due}{isSubOverdue ? " ⚠️" : ""}</span>}</div>
+                        </div>
+                        <button onClick={() => deleteSubtask(s.id)} style={{ background: "none", border: "none", color: "#334155", cursor: "pointer", fontSize: 18, lineHeight: 1 }}>×</button>
+                      </div>;
+                    })}
+                  </div>}
+                  {subtasks.length === 0 && <div style={{ color: "#334155", fontSize: 13, marginBottom: 12 }}>No subtasks yet.</div>}
+                  <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr auto", gap: 8, alignItems: "end" }}>
+                    <div><div style={{ fontSize: 11, color: "#334155", marginBottom: 4, textTransform: "uppercase" }}>Task</div><input value={subtaskInput.title} onChange={e => setSubtaskInput({ ...subtaskInput, title: e.target.value })} onKeyDown={e => e.key === "Enter" && addSubtask()} placeholder="Subtask title..." style={{ ...inputStyle, fontSize: 13 }} /></div>
+                    <div><div style={{ fontSize: 11, color: "#334155", marginBottom: 4, textTransform: "uppercase" }}>Assignee</div><input value={subtaskInput.assignee} onChange={e => setSubtaskInput({ ...subtaskInput, assignee: e.target.value })} placeholder="Name..." style={{ ...inputStyle, fontSize: 13 }} /></div>
+                    <div><div style={{ fontSize: 11, color: "#334155", marginBottom: 4, textTransform: "uppercase" }}>Due</div><input type="date" value={subtaskInput.due} onChange={e => setSubtaskInput({ ...subtaskInput, due: e.target.value })} style={{ ...inputStyle, fontSize: 13 }} /></div>
+                    <button onClick={addSubtask} style={{ ...btnStyle, background: "linear-gradient(135deg,#0ea5e9,#6366f1)", color: "#fff", fontWeight: 700, padding: "9px 14px", whiteSpace: "nowrap" }}>+ Add</button>
+                  </div>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#475569", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Notes Log</div>
+                    <div style={{ maxHeight: 180, overflowY: "auto", marginBottom: 10, display: "flex", flexDirection: "column", gap: 8 }}>
+                      {(p.notesLog || []).length === 0 && <div style={{ color: "#334155", fontSize: 13 }}>No notes yet.</div>}
+                      {(p.notesLog || []).map(n => <div key={n.id} style={{ background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 8, padding: "10px 12px" }}><div style={{ fontSize: 13, color: "#cbd5e1", lineHeight: 1.5 }}>{n.text}</div><div style={{ fontSize: 11, color: "#334155", marginTop: 4 }}>{n.date}</div></div>)}
+                    </div>
+                    <div style={{ display: "flex", gap: 8 }}><input value={noteInput} onChange={e => setNoteInput(e.target.value)} onKeyDown={e => e.key === "Enter" && addNote()} placeholder="Add a note..." style={{ ...inputStyle, flex: 1, fontSize: 13 }} /><button onClick={addNote} style={{ ...btnStyle, background: "#1e2d45", color: "#94a3b8", padding: "8px 14px" }}>Add</button></div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#475569", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Documents</div>
+                    <div style={{ maxHeight: 180, overflowY: "auto", marginBottom: 10, display: "flex", flexDirection: "column", gap: 8 }}>
+                      {(p.documents || []).length === 0 && <div style={{ color: "#334155", fontSize: 13 }}>No documents yet.</div>}
+                      {(p.documents || []).map(d => <div key={d.id} style={{ background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 8, padding: "10px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}><div><div style={{ fontSize: 13, color: "#7dd3fc" }}>📄 {d.name}</div><div style={{ fontSize: 11, color: "#334155" }}>{d.date}</div></div><button onClick={() => removeDoc(d.id)} style={{ background: "none", border: "none", color: "#334155", cursor: "pointer", fontSize: 18, lineHeight: 1 }}>×</button></div>)}
+                    </div>
+                    <div style={{ display: "flex", gap: 8 }}><input value={docInput} onChange={e => setDocInput(e.target.value)} onKeyDown={e => e.key === "Enter" && addDocument()} placeholder="Document name..." style={{ ...inputStyle, flex: 1, fontSize: 13 }} /><button onClick={addDocument} style={{ ...btnStyle, background: "#1e2d45", color: "#94a3b8", padding: "8px 14px" }}>Add</button></div>
+                  </div>
+                </div>
+              </ModalOverlay>
+            );
+          })()}
+
+          {modal === "manageCategories" && (
+            <ModalOverlay onClose={() => { setModal(null); setEditingCatId(null); setShowIconPicker(false); }}>
+              <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 20, marginBottom: 6, color: "#f1f5f9" }}>Manage Categories</div>
+              <div style={{ fontSize: 13, color: "#475569", marginBottom: 24 }}>Add, rename, or remove categories.</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 24 }}>
+                {categories.map(cat => {
+                  const isEditing = editingCatId === cat.id;
+                  const projCount = projects.filter(p => p.category === cat.name).length;
+                  return <div key={cat.id} style={{ background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 10, padding: "12px 14px", display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={{ fontSize: 20 }}>{cat.icon}</span>
+                    {isEditing ? <input value={editingCatName} onChange={e => setEditingCatName(e.target.value)} onKeyDown={e => e.key === "Enter" && saveEditCat(cat)} style={{ ...inputStyle, flex: 1, fontSize: 14 }} autoFocus /> : <span style={{ flex: 1, fontSize: 14, color: "#e2e8f0" }}>{cat.name} <span style={{ color: "#334155", fontSize: 12 }}>({projCount})</span></span>}
+                    {isEditing ? <><button onClick={() => saveEditCat(cat)} style={{ ...btnStyle, background: "#22c55e22", color: "#22c55e", padding: "6px 12px", fontSize: 13 }}>Save</button><button onClick={() => setEditingCatId(null)} style={{ ...btnStyle, background: "#1e2d45", color: "#94a3b8", padding: "6px 12px", fontSize: 13 }}>Cancel</button></> : <><button onClick={() => startEditCat(cat)} style={{ ...btnStyle, background: "#1e2d45", color: "#94a3b8", padding: "6px 12px", fontSize: 13 }}>Rename</button><button onClick={() => deleteCategory(cat)} style={{ ...btnStyle, background: projCount > 0 ? "#33415520" : "#ef444420", color: projCount > 0 ? "#334155" : "#ef4444", padding: "6px 12px", fontSize: 13 }}>Delete</button></>}
+                  </div>;
+                })}
+              </div>
+              <div style={{ borderTop: "1px solid #1e2d45", paddingTop: 20 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#475569", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>Add New Category</div>
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <button onClick={() => setShowIconPicker(!showIconPicker)} style={{ fontSize: 22, background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 8, padding: "7px 10px", cursor: "pointer" }}>{newCatIcon}</button>
+                  <input value={newCatName} onChange={e => setNewCatName(e.target.value)} onKeyDown={e => e.key === "Enter" && addCategory()} placeholder="Category name..." style={{ ...inputStyle, flex: 1 }} />
+                  <button onClick={addCategory} style={{ ...btnStyle, background: "linear-gradient(135deg,#0ea5e9,#6366f1)", color: "#fff", fontWeight: 700, padding: "9px 16px" }}>Add</button>
+                </div>
+                {showIconPicker && <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10, background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 10, padding: 12 }}>{CAT_ICONS.map(ic => <button key={ic} onClick={() => { setNewCatIcon(ic); setShowIconPicker(false); }} style={{ fontSize: 20, background: newCatIcon === ic ? "#1a2d4a" : "none", border: "1px solid transparent", borderRadius: 6, padding: "4px 6px", cursor: "pointer" }}>{ic}</button>)}</div>}
+              </div>
+            </ModalOverlay>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
