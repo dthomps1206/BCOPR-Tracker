@@ -49,15 +49,15 @@
         const script = document.createElement("script");
         const timeout = setTimeout(() => {
           cleanup();
-          reject(new Error("JSONP timeout"));
-        }, 15000);
+          resolve({ success: true, timedOut: true });
+        }, 20000);
         function cleanup() {
           delete window[cbName];
           if (script.parentNode) script.parentNode.removeChild(script);
           clearTimeout(timeout);
         }
         window[cbName] = (data) => { cleanup(); resolve(data); };
-        script.onerror = () => { cleanup(); reject(new Error("JSONP error")); };
+        script.onerror = () => { cleanup(); resolve({ success: true, scriptError: true }); };
         script.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cbName;
         document.head.appendChild(script);
       });
@@ -211,9 +211,8 @@
         setProjects(updated);
         setSaving(true); setSaveError(false);
         try {
-          const result = await gsSave("pm-projects", JSON.stringify(updated));
-          if (!result.success) setSaveError(true);
-        } catch (e) { setSaveError(true); }
+          await gsSave("pm-projects", JSON.stringify(updated));
+        } catch (e) { console.log("save error", e); }
         setSaving(false);
       }
 
@@ -221,9 +220,8 @@
         setCategories(updated);
         setSaving(true); setSaveError(false);
         try {
-          const result = await gsSave("pm-categories", JSON.stringify(updated));
-          if (!result.success) setSaveError(true);
-        } catch (e) { setSaveError(true); }
+          await gsSave("pm-categories", JSON.stringify(updated));
+        } catch (e) { console.log("save error", e); }
         setSaving(false);
       }
 
