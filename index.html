@@ -177,18 +177,14 @@
             const data = await gsLoad();
             const loadedProjects = data.projects || null;
             const loadedCategories = data.categories || null;
-            if (!loadedProjects || loadedProjects.length === 0) {
-              setProjects(SEED_PROJECTS);
-              setCategories(SEED_CATEGORIES);
-              await gsSave({ projects: SEED_PROJECTS, categories: SEED_CATEGORIES });
-            } else {
+            if (loadedProjects && loadedProjects.length > 0) {
               setProjects(loadedProjects);
-              if (loadedCategories && loadedCategories.length > 0) setCategories(loadedCategories);
+            }
+            if (loadedCategories && loadedCategories.length > 0) {
+              setCategories(loadedCategories);
             }
           } catch (e) {
-            console.error("Load failed, using seed data:", e);
-            setProjects(SEED_PROJECTS);
-            setCategories(SEED_CATEGORIES);
+            console.error("Load failed:", e);
           }
           setLoading(false);
         })();
@@ -302,7 +298,24 @@
       };
       const today = new Date(); today.setHours(0,0,0,0);
       const in30 = new Date(today); in30.setDate(in30.getDate() + 30);
-      const upcomingDeadlines = activeProjects.filter(p => p.deadline && p.status !== "Completed").map(p => ({ ...p, deadlineDate: new Date(p.deadline) })).filter(p => p.deadlineDate >= today && p.deadlineDate <= in30).sort((a, b) => a.deadlineDate - b.deadlineDate);
+      const upcomingDeadlines = (() => {
+        const items = [];
+        activeProjects.forEach(p => {
+          // Project-level deadlines
+          if (p.deadline && p.status !== "Completed") {
+            const d = new Date(p.deadline);
+            if (d >= today && d <= in30) items.push({ type: "project", deadlineDate: d, title: p.title, subtitle: p.lead || p.category, date: p.deadline, priority: p.priority, category: p.category, projectId: p.id, project: p });
+          }
+          // Subtask deadlines
+          (p.subtasks || []).forEach(s => {
+            if (s.due && !s.done) {
+              const d = new Date(s.due);
+              if (d >= today && d <= in30) items.push({ type: "subtask", deadlineDate: d, title: s.title, subtitle: p.title, date: s.due, priority: p.priority, category: p.category, assignee: s.assignee, projectId: p.id, project: p });
+            }
+          });
+        });
+        return items.sort((a, b) => a.deadlineDate - b.deadlineDate);
+      })();
       const catCounts = categories.reduce((a, c) => ({ ...a, [c.name]: activeProjects.filter(p => p.category === c.name).length }), {});
 
       if (!authed) return (
@@ -399,21 +412,83 @@
                 </div>
                 <div style={{ background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 14, padding: "22px 24px", marginBottom: 28 }}>
                   <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, marginBottom: 18, fontSize: 15, color: "#cbd5e1", display: "flex", alignItems: "center", gap: 8 }}>📅 Upcoming Deadlines <span style={{ fontSize: 12, color: "#475569", fontWeight: 400 }}>(next 30 days)</span></div>
-                  {upcomingDeadlines.length === 0 ? <div style={{ color: "#334155", fontSize: 13 }}>No upcoming deadlines in the next 30 days.</div> : upcomingDeadlines.map(p => {
-                    const daysLeft = Math.ceil((p.deadlineDate - today) / (1000 * 60 * 60 * 24));
+                  {upcomingDeadlines.length === 0 ? <div style={{ color: "#334155", fontSize: 13 }}>No upcoming deadlines in the next 30 days.</div> : upcomingDeadlines.map((item, i) => {
+                    const daysLeft = Math.ceil((item.deadlineDate - today) / (1000 * 60 * 60 * 24));
                     const urgent = daysLeft <= 7;
-                    const cat = categories.find(c => c.name === p.category);
-                    return <div key={p.id} onClick={() => openDetail(p)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "11px 14px", background: urgent ? "#ef444408" : "#0f1623", border: `1px solid ${urgent ? "#ef444430" : "#1e2d45"}`, borderRadius: 10, marginBottom: 8, cursor: "pointer" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}><span style={{ fontSize: 16 }}>{cat?.icon || "📁"}</span><div><div style={{ fontSize: 13, fontWeight: 500, color: "#e2e8f0" }}>{p.title}</div><div style={{ fontSize: 11, color: "#475569", marginTop: 2 }}>{p.deadline} · {p.lead || p.category}</div></div></div>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}><PriorityBadge priority={p.priority} /><span style={{ fontSize: 12, fontWeight: 700, color: urgent ? "#ef4444" : "#f59e0b", whiteSpace: "nowrap" }}>{daysLeft === 0 ? "Due today!" : `${daysLeft}d left`}</span></div>
+                    const cat = categories.find(c => c.name === item.category);
+                    const isSubtask = item.type === "subtask";
+                    return <div key={i} onClick={() => openDetail(item.project)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "11px 14px", background: urgent ? "#ef444408" : "#0f1623", border: `1px solid ${urgent ? "#ef444430" : "#1e2d45"}`, borderRadius: 10, marginBottom: 8, cursor: "pointer" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <span style={{ fontSize: 16 }}>{isSubtask ? "✅" : cat?.icon || "📁"}</span>
+                        <div>
+                          <div style={{ fontSize: 13, fontWeight: 500, color: "#e2e8f0" }}>{item.title}</div>
+                          <div style={{ fontSize: 11, color: "#475569", marginTop: 2 }}>
+                            {isSubtask ? <span>📁 {item.subtitle}{item.assignee ? ` · 👤 ${item.assignee}` : ""}</span> : <span>{item.date} · {item.subtitle}</span>}
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        {isSubtask && <span style={{ fontSize: 11, color: "#475569", background: "#1e2d45", borderRadius: 6, padding: "2px 8px" }}>subtask</span>}
+                        <PriorityBadge priority={item.priority} />
+                        <span style={{ fontSize: 12, fontWeight: 700, color: urgent ? "#ef4444" : "#f59e0b", whiteSpace: "nowrap" }}>{daysLeft === 0 ? "Due today!" : `${daysLeft}d left`}</span>
+                      </div>
                     </div>;
                   })}
                 </div>
-                <div style={{ background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 14, padding: "22px 24px" }}>
-                  <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, marginBottom: 18, fontSize: 15, color: "#cbd5e1" }}>Recent Projects</div>
-                  {activeProjects.length === 0 && <div style={{ color: "#334155", textAlign: "center", padding: "32px 0", fontSize: 14 }}>No projects yet.</div>}
-                  {activeProjects.slice(-5).reverse().map(p => <ProjectRow key={p.id} p={p} categories={categories} onOpen={openDetail} />)}
-                </div>
+                {/* TASKS BY ASSIGNEE */}
+                {(() => {
+                  const assigneeMap = {};
+                  activeProjects.forEach(p => {
+                    (p.subtasks || []).forEach(s => {
+                      if (s.done) return;
+                      const name = s.assignee || "Unassigned";
+                      if (!assigneeMap[name]) assigneeMap[name] = [];
+                      assigneeMap[name].push({ ...s, projectTitle: p.title, projectId: p.id });
+                    });
+                  });
+                  const assignees = Object.keys(assigneeMap).sort((a, b) => a === "Unassigned" ? 1 : b === "Unassigned" ? -1 : a.localeCompare(b));
+                  if (assignees.length === 0) return null;
+                  const assigneeColors = ["#0ea5e9","#6366f1","#22c55e","#f59e0b","#ec4899","#14b8a6","#f97316","#8b5cf6"];
+                  return (
+                    <div style={{ background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 14, padding: "22px 24px" }}>
+                      <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, marginBottom: 18, fontSize: 15, color: "#cbd5e1" }}>Tasks by Assignee</div>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
+                        {assignees.map((name, i) => {
+                          const tasks = assigneeMap[name];
+                          const color = name === "Unassigned" ? "#475569" : assigneeColors[i % assigneeColors.length];
+                          return (
+                            <div key={name} style={{ background: "#0f1623", border: `1px solid ${color}33`, borderRadius: 12, overflow: "hidden" }}>
+                              <div style={{ padding: "12px 16px", borderBottom: `1px solid ${color}33`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                  <div style={{ width: 28, height: 28, borderRadius: "50%", background: color + "22", border: `2px solid ${color}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: color }}>
+                                    {name === "Unassigned" ? "?" : name[0].toUpperCase()}
+                                  </div>
+                                  <span style={{ fontWeight: 600, fontSize: 14, color: "#e2e8f0" }}>{name}</span>
+                                </div>
+                                <span style={{ background: color + "22", color: color, borderRadius: 10, padding: "2px 8px", fontSize: 12, fontWeight: 700 }}>{tasks.length}</span>
+                              </div>
+                              <div style={{ padding: "8px 0" }}>
+                                {tasks.map(t => {
+                                  const isOverdue = t.due && new Date(t.due) < new Date();
+                                  return (
+                                    <div key={t.id} onClick={() => { const p = activeProjects.find(p => p.id === t.projectId); if (p) openDetail(p); }} style={{ padding: "8px 16px", borderBottom: "1px solid #1e2d4515", cursor: "pointer" }}
+                                      onMouseEnter={e => e.currentTarget.style.background = "#ffffff08"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                                      <div style={{ fontSize: 13, color: "#cbd5e1", fontWeight: 500 }}>{t.title}</div>
+                                      <div style={{ fontSize: 11, color: "#475569", marginTop: 3, display: "flex", gap: 8 }}>
+                                        <span>📁 {t.projectTitle}</span>
+                                        {t.due && <span style={{ color: isOverdue ? "#ef4444" : "#475569" }}>📅 {t.due}{isOverdue ? " ⚠️" : ""}</span>}
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })()}
               </React.Fragment>)}
 
               {view === "list" && (<React.Fragment>
