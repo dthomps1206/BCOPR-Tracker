@@ -21,7 +21,9 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxNfhlt5D77gNSGX42WbAeNcf58Ln1oGfPV815-GLlRlNFRkwndTYPSE1kvg79jswbeUA/exec";
+    const JSONBIN_BIN_ID = "69a1b7edae596e708f4fadb7";
+    const JSONBIN_KEY = "$2a$10$v4XgNxKLLEI8T7rwGE/lXeubw9jGX9F2s1Nf6sXpGnNAiL5kPcc9C";
+    const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
     const APP_PASSWORD = "BCOPR$$";
 
     const SEED_PROJECTS = [{"id":"mm3pphn9mlyzx0vx9","title":"Midland III and IV","category":"RACP","status":"In Progress","priority":"Medium","deadline":"","lead":"David","team":"","description":"","documents":[],"subtasks":[{"id":"mm3q074rpor7at4kah","title":"Revised RDA's submitted to OB 2/9/26","assignee":"David","due":"","done":false}],"archived":false},{"id":"mm3ppphgjdmi7ud73sl","title":"Weavertown","category":"RACP","status":"Planning","priority":"Medium","deadline":"","lead":"David","team":"","description":"","documents":[],"subtasks":[{"id":"mm3q0vbvtwfie7vuk0l","title":"Extension Submitted 2/26/26","assignee":"David","due":"","done":false}],"archived":false},{"id":"mm3pq37pnrei0lil1po","title":"G&B Hopewell","category":"RACP","status":"Planning","priority":"Medium","deadline":"","lead":"David","team":"","description":"","documents":[],"subtasks":[{"id":"mm3q1wtxmyvmdghy358","title":"Marie provided update @ 2/18/26 Board Meeting","assignee":"","due":"","done":false}],"archived":false},{"id":"mm3pqdh8zx3cvl93hik","title":"IBEW I and II","category":"RACP","status":"In Progress","priority":"Medium","deadline":"","lead":"David","team":"","description":"","documents":[],"subtasks":[{"id":"mm3q5lqnxdd0lli4y6","title":"Revised Amendments submitted 2/20/26","assignee":"David","due":"","done":true},{"id":"mm3q5vvz775rnjlmg18","title":"Awaiting amended special conditions","assignee":"","due":"","done":false}],"archived":false},{"id":"mm3pqla4wkgu470558","title":"Centennial","category":"RACP","status":"Planning","priority":"Medium","deadline":"","lead":"David","team":"","description":"","documents":[],"subtasks":[{"id":"mm3q6wvk4hx005xvwtc","title":"Signed extension submitted 1/27/25","assignee":"David","due":"","done":true},{"id":"mm3q7ie16fi2jin3a","title":"Reach out to Scott regarding Don's transfer letter and if OB accepted","assignee":"","due":"","done":false}],"archived":false},{"id":"mm3pqxfxaybghsvbl2j","title":"Golden Dome","category":"RACP","status":"In Progress","priority":"Medium","deadline":"","lead":"David","team":"","description":"","documents":[],"subtasks":[{"id":"mm3q8nrmjjatc4chyea","title":"Agreements sent 2/20/26","assignee":"David","due":"","done":false}],"archived":false},{"id":"mm3pr371wy5y5c4pj0s","title":"Aviation Sciences","category":"RACP","status":"In Progress","priority":"Medium","deadline":"","lead":"David","team":"","description":"","documents":[],"subtasks":[{"id":"mm3q94qjk4u1p7o8p3m","title":"Agreements sent 2/20/26","assignee":"","due":"","done":true},{"id":"mm3q9oj64ok9rm6y6bt","title":"Wait to hear about deeds from Scott","assignee":"","due":"","done":false}],"archived":false},{"id":"mm3pshnahjjll2r18no","title":"EPA Cleanup","category":"Grants","status":"Under Review","priority":"Medium","deadline":"","lead":"Dan","team":"","description":"","documents":[],"subtasks":[{"id":"mm3qaakzbxaor613dcu","title":"Conference registration/booking","assignee":"Dan","due":"2026-03-14","done":false}],"archived":false},{"id":"mm3pt63yxvzw4wxpv","title":"EPA Assessment","category":"Grants","status":"Under Review","priority":"Medium","deadline":"","lead":"Dan","team":"","description":"","documents":[],"subtasks":[],"archived":false},{"id":"mm3ptrnrvvmqgnqfb29","title":"LSA Neighborhood North","category":"RACP","status":"In Progress","priority":"Medium","deadline":"","lead":"David","team":"","description":"","documents":[],"subtasks":[{"id":"mm3qaz8bg8pebwj5b5k","title":"Revised estimates sent to DCED 2/26/26","assignee":"David","due":"","done":false},{"id":"mm3qbd2kxpyd43p66i","title":"Clarify signing contract for 2025 award","assignee":"David","due":"","done":false}],"archived":false},{"id":"mm3pu3mvoav02g080e","title":"LSA Fallston Bridge","category":"Grants","status":"Planning","priority":"High","deadline":"","lead":"Sophie","team":"","description":"","documents":[],"subtasks":[{"id":"mm3qcqf06u6uw5cz0z","title":"Research potential funding sources for Planning/Inspection","assignee":"Sophie","due":"2026-03-06","done":false}],"archived":false},{"id":"mm3pv22wvvafg0ss6be","title":"HUD Brodhead Road","category":"Grants","status":"In Progress","priority":"Medium","deadline":"","lead":"Dan","team":"","description":"","documents":[],"subtasks":[{"id":"mm3qo5wb3ojxz9xkabe","title":"Complete DRGR Input","assignee":"","due":"2026-03-26","done":false}],"archived":false},{"id":"mm3pvxoho7mzrgvhdka","title":"Phone Call Outreach","category":"RAMBA","status":"In Progress","priority":"High","deadline":"","lead":"","team":"","description":"","documents":[],"subtasks":[{"id":"mm3qoot7f24z5lakgmb","title":"Reach out to respective Munis","assignee":"David","due":"2026-03-06","done":false},{"id":"mm3qoxde4i88oyliw6w","title":"Reach out to respecive Munis","assignee":"Sophie","due":"2026-03-06","done":false}],"archived":false},{"id":"mm3vh7xdv6zh96tjqh9","title":"Selection of Scanning Documents","category":"Historical Digitization","status":"Planning","priority":"Medium","deadline":"","lead":"","team":"","description":"","documents":[],"subtasks":[{"id":"mm3vicqqki47etfnzas","title":"Confirm on site day w Brenda","assignee":"David","due":"","done":false}],"archived":false}];
@@ -43,32 +45,23 @@
 
     function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
 
-    function jsonp(url) {
-      return new Promise((resolve, reject) => {
-        const cbName = "cb_" + Math.random().toString(36).slice(2);
-        const script = document.createElement("script");
-        const timeout = setTimeout(() => {
-          cleanup();
-          resolve({ success: true, timedOut: true });
-        }, 20000);
-        function cleanup() {
-          delete window[cbName];
-          if (script.parentNode) script.parentNode.removeChild(script);
-          clearTimeout(timeout);
-        }
-        window[cbName] = (data) => { cleanup(); resolve(data); };
-        script.onerror = () => { cleanup(); resolve({ success: true, scriptError: true }); };
-        script.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cbName;
-        document.head.appendChild(script);
-      });
-    }
-
     async function gsLoad() {
-      return jsonp(`${SCRIPT_URL}?action=load`);
+      const res = await fetch(JSONBIN_URL + "/latest", {
+        headers: { "X-Master-Key": JSONBIN_KEY }
+      });
+      const json = await res.json();
+      return json.record || {};
     }
 
-    async function gsSave(key, value) {
-      return jsonp(`${SCRIPT_URL}?action=save&key=${encodeURIComponent(key)}&data=${encodeURIComponent(value)}`);
+    async function gsSave(data) {
+      await fetch(JSONBIN_URL, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Master-Key": JSONBIN_KEY
+        },
+        body: JSON.stringify(data)
+      });
     }
 
     const inputStyle = { width: "100%", background: "#0a1020", border: "1px solid #1e2d45", borderRadius: 8, padding: "9px 12px", color: "#e2e8f0", fontSize: 14, fontFamily: "'DM Sans', sans-serif", outline: "none", boxSizing: "border-box" };
@@ -182,16 +175,15 @@
         (async () => {
           try {
             const data = await gsLoad();
-            const loadedProjects = data.projects ? JSON.parse(data.projects) : null;
-            const loadedCategories = data.categories && data.categories !== "[]" ? JSON.parse(data.categories) : null;
+            const loadedProjects = data.projects || null;
+            const loadedCategories = data.categories || null;
             if (!loadedProjects || loadedProjects.length === 0) {
               setProjects(SEED_PROJECTS);
               setCategories(SEED_CATEGORIES);
-              await gsSave("pm-projects", JSON.stringify(SEED_PROJECTS));
-              await gsSave("pm-categories", JSON.stringify(SEED_CATEGORIES));
+              await gsSave({ projects: SEED_PROJECTS, categories: SEED_CATEGORIES });
             } else {
               setProjects(loadedProjects);
-              if (loadedCategories) setCategories(loadedCategories);
+              if (loadedCategories && loadedCategories.length > 0) setCategories(loadedCategories);
             }
           } catch (e) {
             console.error("Load failed, using seed data:", e);
@@ -211,8 +203,9 @@
         setProjects(updated);
         setSaving(true); setSaveError(false);
         try {
-          await gsSave("pm-projects", JSON.stringify(updated));
-        } catch (e) { console.log("save error", e); }
+          const current = await gsLoad();
+          await gsSave({ ...current, projects: updated });
+        } catch (e) { console.log("save error", e); setSaveError(true); }
         setSaving(false);
       }
 
@@ -220,8 +213,9 @@
         setCategories(updated);
         setSaving(true); setSaveError(false);
         try {
-          await gsSave("pm-categories", JSON.stringify(updated));
-        } catch (e) { console.log("save error", e); }
+          const current = await gsLoad();
+          await gsSave({ ...current, categories: updated });
+        } catch (e) { console.log("save error", e); setSaveError(true); }
         setSaving(false);
       }
 
