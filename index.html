@@ -47,7 +47,7 @@
 
     async function gsLoad() {
       const res = await fetch(JSONBIN_URL + "/latest", {
-        headers: { "X-Master-Key": JSONBIN_KEY }
+        headers: { "X-Access-Key": JSONBIN_KEY }
       });
       const json = await res.json();
       return json.record || {};
@@ -58,7 +58,7 @@
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "X-Master-Key": JSONBIN_KEY
+          "X-Access-Key": JSONBIN_KEY
         },
         body: JSON.stringify(data)
       });
